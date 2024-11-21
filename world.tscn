@@ -1,0 +1,67 @@
+[gd_scene load_steps=11 format=3 uid="uid://bhia7oh6hevlv"]
+
+[ext_resource type="Texture2D" uid="uid://dsiqnqdkm0n12" path="res://grid.png" id="1_o0v8q"]
+[ext_resource type="Script" path="res://player.gd" id="2_pn2fv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4s6ej"]
+albedo_texture = ExtResource("1_o0v8q")
+albedo_texture_force_srgb = true
+uv1_scale = Vector3(0.405, 0.405, 0.405)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_rcut2"]
+material = SubResource("StandardMaterial3D_4s6ej")
+size = Vector3(100, 1, 100)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_qrtg6"]
+points = PackedVector3Array(50.7837, 1.88095, 50.7837, -50.7837, -1.29365, -50.7837, -50.7837, 1.88095, -50.7837, 50.7837, -1.29365, -50.7837, -50.7837, -1.29365, 50.7837, -50.7837, 1.88095, 50.7837, 50.7837, 1.88095, -50.7837, 50.7837, -1.29365, 50.7837)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rbn8c"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gqkbf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xviww"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_sr7fs"]
+sky_material = SubResource("ProceduralSkyMaterial_xviww")
+
+[sub_resource type="Environment" id="Environment_21345"]
+background_mode = 2
+sky = SubResource("Sky_sr7fs")
+tonemap_mode = 2
+
+[node name="World" type="Node3D"]
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_rcut2")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_qrtg6")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46581, 0)
+script = ExtResource("2_pn2fv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("CapsuleMesh_rbn8c")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_gqkbf")
+
+[node name="Head" type="Node3D" parent="Player"]
+
+[node name="Camera" type="Camera3D" parent="Player/Head"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_21345")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
